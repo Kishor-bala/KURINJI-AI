@@ -7,11 +7,19 @@ PROJECT_ROOT = BASE_DIR.parent
 DATA_DIR = BASE_DIR / "data"
 
 # Audio and Database storage
-AUDIO_DIR = DATA_DIR / "audio"
-RAW_AUDIO_DIR = AUDIO_DIR / "raw"
-CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
-EMBEDDINGS_DIR = DATA_DIR / "embeddings"
+DATA_DIR = BASE_DIR / "data"
 DATABASE_PATH = DATA_DIR / "vocabulary.db"
+EMBEDDINGS_DIR = DATA_DIR / "embeddings"
+
+IS_VERCEL = bool(os.environ.get("VERCEL"))
+if IS_VERCEL:
+    AUDIO_DIR = Path("/tmp/audio")
+    RAW_AUDIO_DIR = AUDIO_DIR / "raw"
+    CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
+else:
+    AUDIO_DIR = DATA_DIR / "audio"
+    RAW_AUDIO_DIR = AUDIO_DIR / "raw"
+    CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
 
 # Original dataset location inside project
 DATASET_DIR = PROJECT_ROOT / "dataset"
@@ -28,7 +36,7 @@ MAX_AUDIO_DURATION = 15.0  # seconds
 SILENCE_TOP_DB = 30  # dB threshold for silence detection
 
 # Encoder & Matching specifications
-ENCODER_MODEL_NAME = "facebook/wav2vec2-xls-r-300m"
+ENCODER_MODEL_NAME = "gemini-3.5-flash"
 ENCODER_REPRESENTATION_DIM = 1024
 DEFAULT_POOLING_METHOD = "mean"
 
@@ -38,6 +46,10 @@ DEFAULT_MARGIN_THRESHOLD = 0.005  # Minimum difference between top-1 and top-2 c
 RECOGNITION_AGGREGATION_METHOD = "max"  # Options: 'max', 'average', 'top3_average'
 USE_EMBEDDING_CENTERING = True  # Eliminates Transformer anisotropy for calibrated discrimination
 
-# Ensure required runtime directories exist
+# Ensure required runtime directories exist safely
 for directory in [DATA_DIR, AUDIO_DIR, RAW_AUDIO_DIR, CLIPS_AUDIO_DIR, EMBEDDINGS_DIR]:
-    directory.mkdir(parents=True, exist_ok=True)
+    try:
+        directory.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        pass
+

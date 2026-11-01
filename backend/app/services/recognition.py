@@ -10,10 +10,6 @@ from backend.app.config import (
 )
 from backend.app.audio.preprocessing import load_and_standardize_audio
 from backend.app.audio.validation import validate_audio_file, detect_excessive_silence
-from backend.app.embeddings.extraction import extract_audio_embedding
-from backend.app.embeddings.storage import load_all_reference_embeddings
-from backend.app.matching.candidate_ranking import rank_candidates
-from backend.app.matching.rejection import evaluate_recognition_decision
 from backend.app.services.gemini_recognition import is_gemini_available, recognize_with_gemini
 
 
@@ -28,8 +24,8 @@ def recognize_spoken_word(
     Executes the end-to-end recognition pipeline:
     1. Audio preprocessing (16kHz mono standardization).
     2. Validation & excessive silence check.
-    3. Primary Recognition: Gemini Multimodal Audio AI (if GEMINI_API_KEY is configured).
-    4. Secondary / Fallback: Frozen XLS-R 300M embedding matching (100% offline).
+    3. Primary Recognition: Gemini Multimodal Audio AI (SOTA accuracy, cloud-native).
+    4. Secondary / Fallback: Frozen XLS-R 300M embedding matching (if PyTorch installed locally).
     5. Verified wordbank lookup from SQLite (Tamil & English meanings).
     """
     # 1. Standardize Audio
@@ -47,13 +43,17 @@ def recognize_spoken_word(
                 "english_meaning": None,
                 "similarity": 0.0,
             }
-        waveform, sr = load_and_standardize_audio(file_path, target_sr=TARGET_SAMPLE_RATE)
+        try:
+            waveform, sr = load_and_standardize_audio(file_path, target_sr=TARGET_SAMPLE_RATE)
+        except Exception:
+            waveform = np.array([], dtype=np.float32)
+            sr = TARGET_SAMPLE_RATE
     else:
         waveform = audio_input.astype(np.float32)
         sr = TARGET_SAMPLE_RATE
 
     # 2. Silence check
-    if detect_excessive_silence(waveform, sample_rate=sr):
+    if len(waveform) > 0 and detect_excessive_silence(waveform, sample_rate=sr):
         return {
             "status": "excessive_silence",
             "message": "Audio recording contains excessive silence or inaudible speech.",
@@ -64,21 +64,37 @@ def recognize_spoken_word(
             "similarity": 0.0,
         }
 
-    # 3. Primary Recognition: Try Gemini Audio AI if API key is present
+    # 3. Primary Recognition: Gemini Audio AI (Cloud-native SOTA)
     if is_gemini_available() and file_path and file_path.is_file():
         try:
             gemini_result = recognize_with_gemini(file_path, language=language)
             if gemini_result is not None:
                 return gemini_result
         except Exception as e:
-            print(f"[Gemini Recognition Fallback] Falling back to local XLS-R: {e}")
+            print(f"[Gemini Recognition] Error: {e}")
 
-    # 3. Extract XLS-R Embedding
-    query_vector, _ = extract_audio_embedding(
-        waveform=waveform,
-        sample_rate=sr,
-        pooling_method="mean",
-    )
+    # 4. Optional Local Offline XLS-R Fallback (only if torch & transformers installed)
+    try:
+        from backend.app.embeddings.extraction import extract_audio_embedding
+        from backend.app.embeddings.storage import load_all_reference_embeddings
+        from backend.app.matching.candidate_ranking import rank_candidates
+        from backend.app.matching.rejection import evaluate_recognition_decision
+
+        query_vector, _ = extract_audio_embedding(
+            waveform=waveform,
+            sample_rate=sr,
+            pooling_method="mean",
+        )
+    except (ImportError, Exception) as e:
+        return {
+            "status": "config_required",
+            "message": "Gemini API recognition requires GEMINI_API_KEY configured in environment variables.",
+            "word_id": None,
+            "language": language,
+            "tamil_meaning": None,
+            "english_meaning": None,
+            "similarity": 0.0,
+        }
 
     # 4. Load Reference Embeddings from DB
     ref_entries = load_all_reference_embeddings(language=language)

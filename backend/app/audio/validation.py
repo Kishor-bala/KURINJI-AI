@@ -40,23 +40,38 @@ def validate_audio_file(file_path: Union[str, Path]) -> Tuple[bool, str, Dict[st
             "frames": info.frames,
         }
     except Exception as sf_err:
-        # Fallback to PyAV for WebM, Opus, AAC, and other browser containers
+        # Fallback 1: Python standard library wave module for WAV files
         try:
-            import av
-            with av.open(str(path)) as container:
-                audio_stream = next((s for s in container.streams if s.type == "audio"), None)
-                if audio_stream is None:
-                    return False, "No audio stream found in file.", {}
-                duration = float(audio_stream.duration * audio_stream.time_base) if audio_stream.duration else 0.0
+            import wave
+            with wave.open(str(path), "rb") as wf:
+                frames = wf.getnframes()
+                rate = wf.getframerate()
+                duration = frames / float(rate) if rate else 0.0
                 metadata = {
-                    "sample_rate": audio_stream.rate or TARGET_SAMPLE_RATE,
-                    "channels": audio_stream.channels or 1,
+                    "sample_rate": rate,
+                    "channels": wf.getnchannels(),
                     "duration": duration,
-                    "format": container.format.name,
-                    "subtype": audio_stream.codec_context.name,
+                    "format": "WAV",
+                    "frames": frames,
                 }
-        except Exception as av_err:
-            return False, f"Corrupted or unreadable audio file: {sf_err}", {}
+        except Exception:
+            # Fallback 2: PyAV if available
+            try:
+                import av
+                with av.open(str(path)) as container:
+                    audio_stream = next((s for s in container.streams if s.type == "audio"), None)
+                    if audio_stream is None:
+                        return False, "No audio stream found in file.", {}
+                    duration = float(audio_stream.duration * audio_stream.time_base) if audio_stream.duration else 0.0
+                    metadata = {
+                        "sample_rate": audio_stream.rate or TARGET_SAMPLE_RATE,
+                        "channels": audio_stream.channels or 1,
+                        "duration": duration,
+                        "format": container.format.name,
+                        "subtype": audio_stream.codec_context.name,
+                    }
+            except Exception as av_err:
+                return False, f"Corrupted or unreadable audio file: {sf_err}", {}
 
     if duration < MIN_AUDIO_DURATION:
         return (

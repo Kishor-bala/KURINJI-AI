@@ -17,6 +17,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 from backend.app.config import (
+    PROJECT_ROOT,
     RAW_AUDIO_DIR,
     CLIPS_AUDIO_DIR,
     DEFAULT_SIMILARITY_THRESHOLD,
@@ -41,7 +42,6 @@ from backend.app.database.recordings import (
 from backend.app.audio.validation import validate_audio_file
 from backend.app.audio.preprocessing import load_and_standardize_audio, save_standardized_audio
 from backend.app.audio.segmentation import suggest_speech_segments_vad, create_segment_clip
-from backend.app.embeddings.extraction import extract_audio_embedding
 from backend.app.embeddings.storage import (
     save_embedding_with_metadata,
     get_embedding_file_path,
@@ -108,6 +108,8 @@ class TextTranslateRequest(BaseModel):
 # --- API Endpoints ---
 
 @app.get("/")
+@app.get("/api")
+@app.get("/api/")
 def root():
     """Root endpoint welcoming users and directing to frontend and API docs."""
     return {
@@ -384,6 +386,7 @@ def extract_single_embedding(clip_id: str = Form(...)):
         raise HTTPException(status_code=404, detail=f"Audio file not found on disk: {clip_path}")
 
     try:
+        from backend.app.embeddings.extraction import extract_audio_embedding
         waveform, sr = load_and_standardize_audio(clip_path, target_sr=TARGET_SAMPLE_RATE)
         vec, _ = extract_audio_embedding(waveform, sample_rate=sr)
         saved_path = save_embedding_with_metadata(
@@ -418,6 +421,6 @@ def stream_audio_clip(clip_id: str):
 
 # Mount static production frontend build if available (single-service Render deployment)
 frontend_dist = PROJECT_ROOT / "frontend" / "dist"
-if frontend_dist.is_dir():
+if frontend_dist.is_dir() and not os.environ.get("VERCEL"):
     from fastapi.staticfiles import StaticFiles
     app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="frontend")

@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Tuple, Union, Optional
 import numpy as np
 import soundfile as sf
-import librosa
 from backend.app.config import TARGET_SAMPLE_RATE, SILENCE_TOP_DB
 
 
@@ -15,7 +14,7 @@ def load_and_standardize_audio(
     Loads an audio file and standardizes it:
     1. Reads raw audio as float32 using soundfile or PyAV fallback (WebM, Opus, MP3).
     2. Converts multi-channel (stereo) audio to mono.
-    3. Resamples signal strictly to target_sr (16,000 Hz) using librosa.resample.
+    3. Resamples signal strictly to target_sr (16,000 Hz).
     4. Trims leading and trailing silence to isolate the spoken word pronunciation.
     5. Validates that waveform is finite (no NaNs or Infs).
     6. Returns (waveform_1d, sample_rate).
@@ -49,10 +48,17 @@ def load_and_standardize_audio(
         except Exception:
             pass
 
-        # Fallback 2: librosa
+        # Fallback 2: librosa if installed
         if data is None:
-            data, sr = librosa.load(str(path), sr=None, mono=False)
-            data = data.astype(np.float32)
+            try:
+                import librosa
+                data, sr = librosa.load(str(path), sr=None, mono=False)
+                data = data.astype(np.float32)
+            except Exception:
+                pass
+
+    if data is None or sr is None:
+        raise ValueError(f"Could not decode audio from: {path}")
 
     # Convert to mono if multi-channel
     if data.ndim > 1:
@@ -65,7 +71,14 @@ def load_and_standardize_audio(
 
     # Resample if sample rate does not match target (16,000 Hz)
     if sr != target_sr:
-        waveform = librosa.resample(waveform, orig_sr=sr, target_sr=target_sr, res_type="soxr_hq")
+        try:
+            import librosa
+            waveform = librosa.resample(waveform, orig_sr=sr, target_sr=target_sr, res_type="soxr_hq")
+        except Exception:
+            orig_indices = np.linspace(0, len(waveform) - 1, len(waveform))
+            new_len = int(len(waveform) * target_sr / sr)
+            new_indices = np.linspace(0, len(waveform) - 1, new_len)
+            waveform = np.interp(new_indices, orig_indices, waveform).astype(np.float32)
         sr = target_sr
 
     # Ensure waveform values are valid numbers
@@ -75,6 +88,7 @@ def load_and_standardize_audio(
     # Trim leading and trailing silence (top_db=SILENCE_TOP_DB) with safety padding so phonemes aren't clipped
     if trim_silence and len(waveform) > int(target_sr * 0.4):
         try:
+            import librosa
             _, index = librosa.effects.trim(waveform, top_db=SILENCE_TOP_DB, frame_length=512, hop_length=128)
             pad = int(target_sr * 0.08)  # 80ms acoustic margin
             start_idx = max(0, int(index[0]) - pad)
@@ -83,6 +97,7 @@ def load_and_standardize_audio(
             if len(extracted) >= int(target_sr * 0.25):
                 waveform = extracted
         except Exception:
+            pass
             pass
 
     # Ensure peak amplitude does not exceed [-1.0, 1.0] without altering speech dynamics

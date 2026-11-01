@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import List, Tuple, Union, Optional
 import numpy as np
-import librosa
 from backend.app.config import TARGET_SAMPLE_RATE
 from backend.app.audio.preprocessing import load_and_standardize_audio, save_standardized_audio
 
@@ -50,16 +49,20 @@ def suggest_speech_segments_vad(
     if len(waveform) == 0:
         return []
 
-    # librosa.effects.split splits non-silent intervals from an audio signal
-    hop_length = int(sample_rate * 0.01)  # 10ms
-    frame_length = int(sample_rate * 0.025)  # 25ms
+    try:
+        import librosa
+        hop_length = int(sample_rate * 0.01)  # 10ms
+        frame_length = int(sample_rate * 0.025)  # 25ms
 
-    intervals = librosa.effects.split(
-        waveform,
-        top_db=top_db,
-        frame_length=frame_length,
-        hop_length=hop_length,
-    )
+        intervals = librosa.effects.split(
+            waveform,
+            top_db=top_db,
+            frame_length=frame_length,
+            hop_length=hop_length,
+        )
+    except Exception:
+        duration = len(waveform) / sample_rate
+        return [(0.0, duration)]
 
     if len(intervals) == 0:
         # Fallback to entire duration if no distinct silent split detected

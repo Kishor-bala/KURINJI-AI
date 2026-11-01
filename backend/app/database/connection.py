@@ -7,11 +7,17 @@ SCHEMA_PATH = Path(__file__).resolve().parent / "schema.sql"
 
 def get_db_connection() -> sqlite3.Connection:
     """Creates and returns an active SQLite database connection with row factory enabled."""
-    conn = sqlite3.connect(DATABASE_PATH, timeout=30.0)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA busy_timeout = 30000;")
-    conn.execute("PRAGMA foreign_keys = ON;")
-    return conn
+    try:
+        conn = sqlite3.connect(DATABASE_PATH, timeout=30.0)
+        conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA busy_timeout = 30000;")
+        conn.execute("PRAGMA foreign_keys = ON;")
+        return conn
+    except sqlite3.OperationalError:
+        # Fallback to read-only mode for read-only serverless filesystems (e.g. Vercel)
+        conn = sqlite3.connect(f"file:{DATABASE_PATH}?mode=ro", uri=True, timeout=30.0)
+        conn.row_factory = sqlite3.Row
+        return conn
 
 
 def init_db():
