@@ -6,25 +6,27 @@ import ModuleGrid from './components/ModuleGrid';
 import LearningCardModal from './components/LearningCardModal';
 import VocabularyManager from './components/VocabularyManager';
 
+import initialModulesData from './data/learning_modules.json';
+
 export default function App() {
   const [selectedLanguage, setSelectedLanguage] = useState('Badaga');
-  const [modulesData, setModulesData] = useState({ modules: [], cards: [] });
+  const [modulesData, setModulesData] = useState(initialModulesData);
   const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [activeCard, setActiveCard] = useState(null);
   const [showManager, setShowManager] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Load primary learning bundles and concept cards
+  // Sync with backend API
   useEffect(() => {
     fetch('/api/modules')
       .then((res) => res.json())
       .then((data) => {
-        setModulesData(data);
-        setIsLoading(false);
+        if (data && data.modules && data.modules.length > 0) {
+          setModulesData(data);
+        }
       })
       .catch((err) => {
-        console.error('Failed to load learning modules:', err);
-        setIsLoading(false);
+        console.warn('Using bundled curriculum data:', err);
       });
   }, []);
 
