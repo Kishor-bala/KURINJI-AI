@@ -1,7 +1,15 @@
-import torch
+try:
+    import torch
+    from transformers import Wav2Vec2Model, AutoFeatureExtractor
+    HAS_TORCH = True
+except ImportError:
+    torch = None
+    Wav2Vec2Model = None
+    AutoFeatureExtractor = None
+    HAS_TORCH = False
+
 import numpy as np
 from typing import Tuple, Optional
-from transformers import Wav2Vec2Model, AutoFeatureExtractor
 from backend.app.config import ENCODER_MODEL_NAME, TARGET_SAMPLE_RATE
 
 

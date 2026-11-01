@@ -1,8 +1,15 @@
-import torch
 import numpy as np
 from typing import Optional, Tuple
-from backend.app.models.xlsr_encoder import XLSREncoder
 from backend.app.config import TARGET_SAMPLE_RATE, DEFAULT_POOLING_METHOD
+
+try:
+    import torch
+    from backend.app.models.xlsr_encoder import XLSREncoder
+    HAS_TORCH = True
+except ImportError:
+    torch = None
+    XLSREncoder = None
+    HAS_TORCH = False
 
 
 def pool_frame_representations(
@@ -67,6 +74,12 @@ def extract_audio_embedding(
     Returns:
         (pooled_embedding_1024d, optional_frame_representations)
     """
+    if not HAS_TORCH:
+        raise RuntimeError(
+            "Local XLS-R PyTorch encoder is not available in lightweight serverless mode. "
+            "Please configure GEMINI_API_KEY in your Vercel environment variables for speech recognition."
+        )
+
     encoder = XLSREncoder.get_instance()
     hidden_states, frame_mask = encoder.extract_hidden_states(waveform, sample_rate=sample_rate)
 
