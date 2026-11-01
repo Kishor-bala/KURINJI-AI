@@ -123,10 +123,14 @@ def root():
 @app.get("/api/health")
 def health_check():
     """Returns application health, database status, and vocabulary/embedding counts."""
-    with get_db_connection() as conn:
-        vocab_count = conn.execute("SELECT COUNT(*) FROM vocabulary;").fetchone()[0]
-        rec_count = conn.execute("SELECT COUNT(*) FROM recordings;").fetchone()[0]
-        emb_count = conn.execute("SELECT COUNT(*) FROM embeddings;").fetchone()[0]
+    vocab_count, rec_count, emb_count = 0, 0, 0
+    try:
+        with get_db_connection() as conn:
+            vocab_count = conn.execute("SELECT COUNT(*) FROM vocabulary;").fetchone()[0]
+            rec_count = conn.execute("SELECT COUNT(*) FROM recordings;").fetchone()[0]
+            emb_count = conn.execute("SELECT COUNT(*) FROM embeddings;").fetchone()[0]
+    except Exception as e:
+        print(f"[Health Check DB Warning] {e}")
 
     return {
         "status": "healthy",

@@ -9,6 +9,16 @@ DATA_DIR = BASE_DIR / "data"
 # Audio and Database storage
 DATA_DIR = BASE_DIR / "data"
 DATABASE_PATH = DATA_DIR / "vocabulary.db"
+if not DATABASE_PATH.is_file():
+    for alt in [
+        Path("/var/task/backend/data/vocabulary.db"),
+        PROJECT_ROOT / "backend" / "data" / "vocabulary.db",
+        PROJECT_ROOT / "data" / "vocabulary.db",
+    ]:
+        if alt.is_file():
+            DATABASE_PATH = alt
+            DATA_DIR = alt.parent
+            break
 EMBEDDINGS_DIR = DATA_DIR / "embeddings"
 
 IS_VERCEL = bool(os.environ.get("VERCEL"))
