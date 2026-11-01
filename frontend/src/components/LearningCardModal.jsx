@@ -54,34 +54,28 @@ export default function LearningCardModal({
 
   // Play authentic native speaker audio from verified dataset with phonetic speech fallback
   const playNativeClip = async () => {
-    if (!card.word_id) {
-      speakNativePhonetic();
-      return;
-    }
     setIsPlayingNative(true);
     setPlayingState('native');
 
-    try {
-      const res = await fetch(`/api/vocabulary/${card.word_id}`);
-      if (!res.ok) throw new Error('DB fetch failed');
-      const data = await res.json();
+    // 1. Direct CDN authentic dataset audio clip URL (fast, zero serverless delay)
+    const directUrl = selectedLanguage === 'Marwari'
+      ? (card.marwari_audio_url || `/audio/${card.id}_marwari.wav`)
+      : (card.badaga_audio_url || `/audio/${card.id}_badaga.wav`);
 
-      if (data.recordings && data.recordings.length > 0) {
-        // Pick the primary recording clip
-        const clipId = data.recordings[0].clip_id;
-        const audio = new Audio(`/api/audio/playback/${clipId}`);
-        audio.onended = () => {
-          setIsPlayingNative(false);
-          setPlayingState(null);
-        };
-        audio.onerror = () => {
-          // If remote clip is missing on cloud, fall back to phonetic speech
-          speakNativePhonetic();
-        };
-        await audio.play();
-      } else {
-        speakNativePhonetic();
-      }
+    const audio = new Audio(directUrl);
+
+    audio.onended = () => {
+      setIsPlayingNative(false);
+      setPlayingState(null);
+    };
+
+    audio.onerror = () => {
+      // If remote clip is missing or fails, fall back to phonetic speech
+      speakNativePhonetic();
+    };
+
+    try {
+      await audio.play();
     } catch {
       speakNativePhonetic();
     }

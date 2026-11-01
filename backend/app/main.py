@@ -230,6 +230,7 @@ async def recognize_audio(
     Processes an incoming query audio recording, extracts its XLS-R representation,
     matches against stored reference embeddings, and returns predicted word with verified meanings.
     """
+    RAW_AUDIO_DIR.mkdir(parents=True, exist_ok=True)
     temp_query_path = RAW_AUDIO_DIR / f"query_{uuid.uuid4().hex[:8]}.wav"
     try:
         with open(temp_query_path, "wb") as buffer:

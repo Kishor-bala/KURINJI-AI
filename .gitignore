@@ -17,25 +17,22 @@ frontend/dist/
 
 # Local sensitive environment variables
 .env.local
+.env
 
 # Temporary audio files
 backend/data/audio/raw/*
 !backend/data/audio/raw/.gitkeep
 
-.env
-
 dataset/
 
-# Clutter & Test files
-*.wav
-*.bak
-backend/data/embeddings/*.npy
-.agents/
-.taste-skill/
-skills-lock.json
+# Test audio files
+noise_test.wav
+temp_noise.wav
+
+# Allow frontend public curriculum audio clips
+!frontend/public/audio/*.wav
 
 # Clutter & Test files
-*.wav
 *.bak
 backend/data/embeddings/*.npy
 .agents/

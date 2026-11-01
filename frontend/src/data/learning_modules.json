@@ -90,7 +90,9 @@
           "D"
         ],
         "example": "Nod your head to say yes."
-      }
+      },
+      "badaga_audio_url": "/audio/body_head_badaga.wav",
+      "marwari_audio_url": "/audio/body_head_marwari.wav"
     },
     {
       "id": "body_eye",
@@ -125,7 +127,9 @@
           "E"
         ],
         "example": "I see the blue sky with my eyes."
-      }
+      },
+      "badaga_audio_url": "/audio/body_eye_badaga.wav",
+      "marwari_audio_url": "/audio/body_eye_marwari.wav"
     },
     {
       "id": "body_nose",
@@ -162,7 +166,9 @@
           "E"
         ],
         "example": "We smell sweet flowers with our nose."
-      }
+      },
+      "badaga_audio_url": "/audio/body_nose_badaga.wav",
+      "marwari_audio_url": "/audio/body_nose_marwari.wav"
     },
     {
       "id": "body_mouth",
@@ -199,7 +205,9 @@
           "H"
         ],
         "example": "Open your mouth and smile happily."
-      }
+      },
+      "badaga_audio_url": "/audio/body_mouth_badaga.wav",
+      "marwari_audio_url": "/audio/body_mouth_marwari.wav"
     },
     {
       "id": "body_ear",
@@ -234,7 +242,9 @@
           "R"
         ],
         "example": "We hear birds singing with our ears."
-      }
+      },
+      "badaga_audio_url": "/audio/body_ear_badaga.wav",
+      "marwari_audio_url": "/audio/body_ear_marwari.wav"
     },
     {
       "id": "body_hand",
@@ -269,7 +279,9 @@
           "D"
         ],
         "example": "Clap your hands together."
-      }
+      },
+      "badaga_audio_url": "/audio/body_hand_badaga.wav",
+      "marwari_audio_url": "/audio/body_hand_marwari.wav"
     },
     {
       "id": "body_leg",
@@ -304,7 +316,9 @@
           "G"
         ],
         "example": "We walk and run with our legs."
-      }
+      },
+      "badaga_audio_url": "/audio/body_leg_badaga.wav",
+      "marwari_audio_url": "/audio/body_leg_marwari.wav"
     },
     {
       "id": "body_teeth",
@@ -341,7 +355,9 @@
           "H"
         ],
         "example": "Brush your teeth every morning."
-      }
+      },
+      "badaga_audio_url": "/audio/body_teeth_badaga.wav",
+      "marwari_audio_url": "/audio/body_teeth_marwari.wav"
     },
     {
       "id": "body_hair",
@@ -377,7 +393,9 @@
           "R"
         ],
         "example": "Comb your hair neatly before school."
-      }
+      },
+      "badaga_audio_url": "/audio/body_hair_badaga.wav",
+      "marwari_audio_url": "/audio/body_hair_marwari.wav"
     },
     {
       "id": "body_stomach",
@@ -417,7 +435,9 @@
           "H"
         ],
         "example": "Healthy meals keep our stomach strong."
-      }
+      },
+      "badaga_audio_url": "/audio/body_stomach_badaga.wav",
+      "marwari_audio_url": "/audio/body_stomach_marwari.wav"
     },
     {
       "id": "body_finger",
@@ -456,7 +476,9 @@
           "R"
         ],
         "example": "Point to the picture with your finger."
-      }
+      },
+      "badaga_audio_url": "/audio/body_finger_badaga.wav",
+      "marwari_audio_url": "/audio/body_finger_marwari.wav"
     },
     {
       "id": "body_face",
@@ -493,7 +515,9 @@
           "E"
         ],
         "example": "Wash your face with clean water."
-      }
+      },
+      "badaga_audio_url": "/audio/body_face_badaga.wav",
+      "marwari_audio_url": "/audio/body_face_marwari.wav"
     },
     {
       "id": "body_tongue",
@@ -532,7 +556,9 @@
           "E"
         ],
         "example": "Our tongue tastes sweet and sour treats."
-      }
+      },
+      "badaga_audio_url": "/audio/body_tongue_badaga.wav",
+      "marwari_audio_url": "/audio/body_tongue_marwari.wav"
     },
     {
       "id": "family_mother",
@@ -571,7 +597,9 @@
           "R"
         ],
         "example": "Mother gives us warm care and affection."
-      }
+      },
+      "badaga_audio_url": "/audio/family_mother_badaga.wav",
+      "marwari_audio_url": "/audio/family_mother_marwari.wav"
     },
     {
       "id": "family_father",
@@ -610,7 +638,9 @@
           "R"
         ],
         "example": "Father helps me with my lessons."
-      }
+      },
+      "badaga_audio_url": "/audio/family_father_badaga.wav",
+      "marwari_audio_url": "/audio/family_father_marwari.wav"
     },
     {
       "id": "family_grandmother",
@@ -648,7 +678,9 @@
           "D"
         ],
         "example": "Grandmother bakes delicious sweet treats."
-      }
+      },
+      "badaga_audio_url": "/audio/family_grandmother_badaga.wav",
+      "marwari_audio_url": "/audio/family_grandmother_marwari.wav"
     },
     {
       "id": "family_grandfather",
@@ -686,7 +718,9 @@
           "D"
         ],
         "example": "Grandfather walks proudly in the garden."
-      }
+      },
+      "badaga_audio_url": "/audio/family_grandfather_badaga.wav",
+      "marwari_audio_url": "/audio/family_grandfather_marwari.wav"
     },
     {
       "id": "family_brother",
@@ -727,7 +761,9 @@
           "R"
         ],
         "example": "My brother shares his toys with me."
-      }
+      },
+      "badaga_audio_url": "/audio/family_brother_badaga.wav",
+      "marwari_audio_url": "/audio/family_brother_marwari.wav"
     },
     {
       "id": "family_sister",
@@ -766,7 +802,9 @@
           "R"
         ],
         "example": "My elder sister reads stories to me."
-      }
+      },
+      "badaga_audio_url": "/audio/family_sister_badaga.wav",
+      "marwari_audio_url": "/audio/family_sister_marwari.wav"
     },
     {
       "id": "family_child",
@@ -805,7 +843,9 @@
           "D"
         ],
         "example": "The playful child loves running outside."
-      }
+      },
+      "badaga_audio_url": "/audio/family_child_badaga.wav",
+      "marwari_audio_url": "/audio/family_child_marwari.wav"
     },
     {
       "id": "family_baby",
@@ -842,7 +882,9 @@
           "Y"
         ],
         "example": "The sweet baby sleeps peacefully."
-      }
+      },
+      "badaga_audio_url": "/audio/family_baby_badaga.wav",
+      "marwari_audio_url": "/audio/family_baby_marwari.wav"
     },
     {
       "id": "family_house",
@@ -879,7 +921,9 @@
           "E"
         ],
         "example": "We live happily together in our house."
-      }
+      },
+      "badaga_audio_url": "/audio/family_house_badaga.wav",
+      "marwari_audio_url": "/audio/family_house_marwari.wav"
     },
     {
       "id": "family_door",
@@ -916,7 +960,9 @@
           "R"
         ],
         "example": "Please close the room door gently."
-      }
+      },
+      "badaga_audio_url": "/audio/family_door_badaga.wav",
+      "marwari_audio_url": "/audio/family_door_marwari.wav"
     },
     {
       "id": "family_window",
@@ -956,7 +1002,9 @@
           "W"
         ],
         "example": "Morning sunlight shines through the window."
-      }
+      },
+      "badaga_audio_url": "/audio/family_window_badaga.wav",
+      "marwari_audio_url": "/audio/family_window_marwari.wav"
     },
     {
       "id": "family_sleep",
@@ -994,7 +1042,8 @@
           "P"
         ],
         "example": "We sleep well at night to stay healthy."
-      }
+      },
+      "badaga_audio_url": "/audio/family_sleep_badaga.wav"
     },
     {
       "id": "nature_sun",
@@ -1031,7 +1080,8 @@
           "N"
         ],
         "example": "The bright yellow sun gives us warm light."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_sun_badaga.wav"
     },
     {
       "id": "nature_rain",
@@ -1067,7 +1117,8 @@
           "N"
         ],
         "example": "Raindrops fall gently from grey clouds."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_rain_badaga.wav"
     },
     {
       "id": "nature_thunder",
@@ -1106,7 +1157,8 @@
           "R"
         ],
         "example": "We heard a loud roll of thunder."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_thunder_badaga.wav"
     },
     {
       "id": "nature_rainbow",
@@ -1147,7 +1199,8 @@
           "W"
         ],
         "example": "A colorful rainbow spans across the sky."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_rainbow_badaga.wav"
     },
     {
       "id": "nature_night",
@@ -1185,7 +1238,8 @@
           "T"
         ],
         "example": "Stars twinkle brightly in the calm night."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_night_badaga.wav"
     },
     {
       "id": "nature_tree",
@@ -1222,7 +1276,8 @@
           "E"
         ],
         "example": "Big green trees give us shade and fresh air."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_tree_badaga.wav"
     },
     {
       "id": "nature_flower",
@@ -1259,7 +1314,8 @@
           "R"
         ],
         "example": "Flowers bloom sweetly in spring."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_flower_badaga.wav"
     },
     {
       "id": "nature_leaf",
@@ -1295,7 +1351,8 @@
           "F"
         ],
         "example": "Green leaves make fresh food for the plant."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_leaf_badaga.wav"
     },
     {
       "id": "nature_water",
@@ -1332,7 +1389,9 @@
           "R"
         ],
         "example": "Drink plenty of clean water every day."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_water_badaga.wav",
+      "marwari_audio_url": "/audio/nature_water_marwari.wav"
     },
     {
       "id": "nature_fire",
@@ -1370,7 +1429,9 @@
           "E"
         ],
         "example": "A campfire gives warm glow and heat."
-      }
+      },
+      "badaga_audio_url": "/audio/nature_fire_badaga.wav",
+      "marwari_audio_url": "/audio/nature_fire_marwari.wav"
     },
     {
       "id": "animals_cow",
@@ -1405,7 +1466,9 @@
           "W"
         ],
         "example": "The gentle cow grazes in the meadow."
-      }
+      },
+      "badaga_audio_url": "/audio/animals_cow_badaga.wav",
+      "marwari_audio_url": "/audio/animals_cow_marwari.wav"
     },
     {
       "id": "animals_dog",
@@ -1440,7 +1503,8 @@
           "G"
         ],
         "example": "The playful dog wags its fluffy tail."
-      }
+      },
+      "badaga_audio_url": "/audio/animals_dog_badaga.wav"
     },
     {
       "id": "animals_cat",
@@ -1475,7 +1539,8 @@
           "T"
         ],
         "example": "The soft cat purrs when petted gently."
-      }
+      },
+      "badaga_audio_url": "/audio/animals_cat_badaga.wav"
     },
     {
       "id": "animals_bird",
@@ -1512,7 +1577,8 @@
           "D"
         ],
         "example": "The sweet bird sings high in the tree."
-      }
+      },
+      "badaga_audio_url": "/audio/animals_bird_badaga.wav"
     },
     {
       "id": "animals_fish",
@@ -1548,7 +1614,8 @@
           "H"
         ],
         "example": "Shiny little fish swim in clear stream."
-      }
+      },
+      "badaga_audio_url": "/audio/animals_fish_badaga.wav"
     },
     {
       "id": "animals_crow",
@@ -1585,7 +1652,8 @@
           "W"
         ],
         "example": "The clever black crow calls loudly."
-      }
+      },
+      "badaga_audio_url": "/audio/animals_crow_badaga.wav"
     },
     {
       "id": "num_one",
@@ -1621,7 +1689,9 @@
           "E"
         ],
         "example": "Number one is where our counting begins."
-      }
+      },
+      "badaga_audio_url": "/audio/num_one_badaga.wav",
+      "marwari_audio_url": "/audio/num_one_marwari.wav"
     },
     {
       "id": "num_two",
@@ -1658,7 +1728,8 @@
           "O"
         ],
         "example": "We have two eyes to see the world."
-      }
+      },
+      "badaga_audio_url": "/audio/num_two_badaga.wav"
     },
     {
       "id": "num_three",
@@ -1696,7 +1767,8 @@
           "E"
         ],
         "example": "A triangle has three sharp corners."
-      }
+      },
+      "badaga_audio_url": "/audio/num_three_badaga.wav"
     },
     {
       "id": "num_four",
@@ -1733,7 +1805,8 @@
           "R"
         ],
         "example": "A square has four equal sides."
-      }
+      },
+      "badaga_audio_url": "/audio/num_four_badaga.wav"
     },
     {
       "id": "num_five",
@@ -1770,7 +1843,8 @@
           "E"
         ],
         "example": "High five with your five fingers."
-      }
+      },
+      "badaga_audio_url": "/audio/num_five_badaga.wav"
     },
     {
       "id": "num_six",
@@ -1805,7 +1879,8 @@
           "X"
         ],
         "example": "Insects have six little legs."
-      }
+      },
+      "badaga_audio_url": "/audio/num_six_badaga.wav"
     },
     {
       "id": "num_seven",
@@ -1842,7 +1917,8 @@
           "N"
         ],
         "example": "There are seven days in a full week."
-      }
+      },
+      "badaga_audio_url": "/audio/num_seven_badaga.wav"
     },
     {
       "id": "num_eight",
@@ -1880,7 +1956,8 @@
           "T"
         ],
         "example": "A spider crawls on eight little feet."
-      }
+      },
+      "badaga_audio_url": "/audio/num_eight_badaga.wav"
     },
     {
       "id": "num_nine",
@@ -1918,7 +1995,8 @@
           "E"
         ],
         "example": "Number nine comes right before ten."
-      }
+      },
+      "badaga_audio_url": "/audio/num_nine_badaga.wav"
     },
     {
       "id": "num_ten",
@@ -1954,7 +2032,8 @@
           "N"
         ],
         "example": "We have ten toes on our feet."
-      }
+      },
+      "badaga_audio_url": "/audio/num_ten_badaga.wav"
     },
     {
       "id": "school_teacher",
@@ -1996,7 +2075,9 @@
           "R"
         ],
         "example": "Our kind teacher guides us every day."
-      }
+      },
+      "badaga_audio_url": "/audio/school_teacher_badaga.wav",
+      "marwari_audio_url": "/audio/school_teacher_marwari.wav"
     },
     {
       "id": "school_building",
@@ -2035,7 +2116,8 @@
           "L"
         ],
         "example": "We learn and play happily with friends at school."
-      }
+      },
+      "badaga_audio_url": "/audio/school_building_badaga.wav"
     },
     {
       "id": "school_book",
@@ -2074,7 +2156,8 @@
           "K"
         ],
         "example": "Reading a colorful story book is fun."
-      }
+      },
+      "badaga_audio_url": "/audio/school_book_badaga.wav"
     },
     {
       "id": "school_flag",
@@ -2110,7 +2193,8 @@
           "G"
         ],
         "example": "Our colorful flag waves high in the morning breeze."
-      }
+      },
+      "badaga_audio_url": "/audio/school_flag_badaga.wav"
     },
     {
       "id": "school_walk",
@@ -2146,7 +2230,8 @@
           "K"
         ],
         "example": "We walk safely on the footpath."
-      }
+      },
+      "badaga_audio_url": "/audio/school_walk_badaga.wav"
     },
     {
       "id": "school_run",
@@ -2181,7 +2266,8 @@
           "N"
         ],
         "example": "Children run with joy in the school ground."
-      }
+      },
+      "badaga_audio_url": "/audio/school_run_badaga.wav"
     },
     {
       "id": "school_come",
@@ -2216,7 +2302,8 @@
           "E"
         ],
         "example": "Come sit with us and read together."
-      }
+      },
+      "badaga_audio_url": "/audio/school_come_badaga.wav"
     }
   ]
 }

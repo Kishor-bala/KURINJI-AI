@@ -1,4 +1,5 @@
 import os
+import tempfile
 from pathlib import Path
 
 # Base paths
@@ -7,11 +8,18 @@ PROJECT_ROOT = BASE_DIR.parent
 DATA_DIR = BASE_DIR / "data"
 
 # Audio and Database storage
-AUDIO_DIR = DATA_DIR / "audio"
-RAW_AUDIO_DIR = AUDIO_DIR / "raw"
-CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
+if os.name != "nt" and os.path.exists("/tmp"):
+    AUDIO_DIR = Path("/tmp/kurinji/audio")
+    RAW_AUDIO_DIR = AUDIO_DIR / "raw"
+    CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
+    DATABASE_PATH = Path("/tmp/vocabulary.db")
+else:
+    AUDIO_DIR = DATA_DIR / "audio"
+    RAW_AUDIO_DIR = AUDIO_DIR / "raw"
+    CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
+    DATABASE_PATH = DATA_DIR / "vocabulary.db"
+
 EMBEDDINGS_DIR = DATA_DIR / "embeddings"
-DATABASE_PATH = DATA_DIR / "vocabulary.db"
 
 # Original dataset location inside project
 DATASET_DIR = PROJECT_ROOT / "dataset"
@@ -40,7 +48,7 @@ USE_EMBEDDING_CENTERING = True  # Eliminates Transformer anisotropy for calibrat
 
 # Ensure required runtime directories exist (safe for read-only serverless filesystems)
 try:
-    for directory in [DATA_DIR, AUDIO_DIR, RAW_AUDIO_DIR, CLIPS_AUDIO_DIR, EMBEDDINGS_DIR]:
+    for directory in [DATA_DIR, AUDIO_DIR, RAW_AUDIO_DIR, CLIPS_AUDIO_DIR]:
         directory.mkdir(parents=True, exist_ok=True)
 except OSError:
     pass
