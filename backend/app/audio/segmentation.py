@@ -1,7 +1,12 @@
 from pathlib import Path
 from typing import List, Tuple, Union, Optional
 import numpy as np
-import librosa
+try:
+    import librosa
+    HAS_LIBROSA = True
+except ImportError:
+    librosa = None
+    HAS_LIBROSA = False
 from backend.app.config import TARGET_SAMPLE_RATE
 from backend.app.audio.preprocessing import load_and_standardize_audio, save_standardized_audio
 

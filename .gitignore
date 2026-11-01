@@ -33,3 +33,11 @@ backend/data/embeddings/*.npy
 .agents/
 .taste-skill/
 skills-lock.json
+
+# Clutter & Test files
+*.wav
+*.bak
+backend/data/embeddings/*.npy
+.agents/
+.taste-skill/
+skills-lock.json

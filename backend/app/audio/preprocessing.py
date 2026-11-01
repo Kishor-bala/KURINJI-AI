@@ -2,7 +2,12 @@ from pathlib import Path
 from typing import Tuple, Union, Optional
 import numpy as np
 import soundfile as sf
-import librosa
+try:
+    import librosa
+    HAS_LIBROSA = True
+except ImportError:
+    librosa = None
+    HAS_LIBROSA = False
 from backend.app.config import TARGET_SAMPLE_RATE, SILENCE_TOP_DB
 
 
@@ -65,7 +70,13 @@ def load_and_standardize_audio(
 
     # Resample if sample rate does not match target (16,000 Hz)
     if sr != target_sr:
-        waveform = librosa.resample(waveform, orig_sr=sr, target_sr=target_sr, res_type="soxr_hq")
+        if HAS_LIBROSA:
+            waveform = librosa.resample(waveform, orig_sr=sr, target_sr=target_sr, res_type="soxr_hq")
+        else:
+            new_len = int(round(len(waveform) * (float(target_sr) / float(sr))))
+            old_indices = np.linspace(0, len(waveform) - 1, len(waveform))
+            new_indices = np.linspace(0, len(waveform) - 1, new_len)
+            waveform = np.interp(new_indices, old_indices, waveform).astype(np.float32)
         sr = target_sr
 
     # Ensure waveform values are valid numbers
@@ -75,13 +86,25 @@ def load_and_standardize_audio(
     # Trim leading and trailing silence (top_db=SILENCE_TOP_DB) with safety padding so phonemes aren't clipped
     if trim_silence and len(waveform) > int(target_sr * 0.4):
         try:
-            _, index = librosa.effects.trim(waveform, top_db=SILENCE_TOP_DB, frame_length=512, hop_length=128)
-            pad = int(target_sr * 0.08)  # 80ms acoustic margin
-            start_idx = max(0, int(index[0]) - pad)
-            end_idx = min(len(waveform), int(index[1]) + pad)
-            extracted = waveform[start_idx:end_idx]
-            if len(extracted) >= int(target_sr * 0.25):
-                waveform = extracted
+            if HAS_LIBROSA:
+                _, index = librosa.effects.trim(waveform, top_db=SILENCE_TOP_DB, frame_length=512, hop_length=128)
+                pad = int(target_sr * 0.08)  # 80ms acoustic margin
+                start_idx = max(0, int(index[0]) - pad)
+                end_idx = min(len(waveform), int(index[1]) + pad)
+                extracted = waveform[start_idx:end_idx]
+                if len(extracted) >= int(target_sr * 0.25):
+                    waveform = extracted
+            else:
+                abs_signal = np.abs(waveform)
+                threshold = max(float(np.max(abs_signal) * 0.02), 1e-4)
+                non_silent = np.where(abs_signal > threshold)[0]
+                if len(non_silent) > 0:
+                    pad = int(target_sr * 0.08)
+                    start_idx = max(0, non_silent[0] - pad)
+                    end_idx = min(len(waveform), non_silent[-1] + pad)
+                    extracted = waveform[start_idx:end_idx]
+                    if len(extracted) >= int(target_sr * 0.25):
+                        waveform = extracted
         except Exception:
             pass
 
