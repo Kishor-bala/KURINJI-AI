@@ -25,3 +25,11 @@ backend/data/audio/raw/*
 .env
 
 dataset/
+
+# Clutter & Test files
+*.wav
+*.bak
+backend/data/embeddings/*.npy
+.agents/
+.taste-skill/
+skills-lock.json

@@ -38,6 +38,9 @@ DEFAULT_MARGIN_THRESHOLD = 0.005  # Minimum difference between top-1 and top-2 c
 RECOGNITION_AGGREGATION_METHOD = "max"  # Options: 'max', 'average', 'top3_average'
 USE_EMBEDDING_CENTERING = True  # Eliminates Transformer anisotropy for calibrated discrimination
 
-# Ensure required runtime directories exist
-for directory in [DATA_DIR, AUDIO_DIR, RAW_AUDIO_DIR, CLIPS_AUDIO_DIR, EMBEDDINGS_DIR]:
-    directory.mkdir(parents=True, exist_ok=True)
+# Ensure required runtime directories exist (safe for read-only serverless filesystems)
+try:
+    for directory in [DATA_DIR, AUDIO_DIR, RAW_AUDIO_DIR, CLIPS_AUDIO_DIR, EMBEDDINGS_DIR]:
+        directory.mkdir(parents=True, exist_ok=True)
+except OSError:
+    pass
