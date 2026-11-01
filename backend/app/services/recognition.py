@@ -73,23 +73,12 @@ def recognize_spoken_word(
         except Exception as e:
             print(f"[Gemini Recognition Fallback] Falling back to local XLS-R: {e}")
 
-    # 4. Extract XLS-R Embedding (Local offline fallback)
-    try:
-        query_vector, _ = extract_audio_embedding(
-            waveform=waveform,
-            sample_rate=sr,
-            pooling_method="mean",
-        )
-    except Exception as e:
-        return {
-            "status": "recognition_unavailable",
-            "message": "Speech recognition in lightweight cloud deployment requires GEMINI_API_KEY. Please ensure it is configured in Vercel settings.",
-            "word_id": None,
-            "language": language,
-            "tamil_meaning": None,
-            "english_meaning": None,
-            "similarity": 0.0,
-        }
+    # 3. Extract XLS-R Embedding
+    query_vector, _ = extract_audio_embedding(
+        waveform=waveform,
+        sample_rate=sr,
+        pooling_method="mean",
+    )
 
     # 4. Load Reference Embeddings from DB
     ref_entries = load_all_reference_embeddings(language=language)

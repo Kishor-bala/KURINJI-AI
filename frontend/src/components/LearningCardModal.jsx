@@ -43,41 +43,36 @@ export default function LearningCardModal({
     window.speechSynthesis.speak(utterance);
   };
 
-  const speakNativePhonetic = () => {
-    // Speak the native word using Tamil phonetic pronunciation for Badaga,
-    // or Hindi for Marwari, so the child always hears authentic audio!
-    const textToSpeak = nativeInfo.tamil_script || nativeInfo.word;
-    const lang = selectedLanguage === 'Marwari' ? 'hi-IN' : 'ta-IN';
-    speakText(textToSpeak, lang, 'native');
-    setIsPlayingNative(false);
-  };
-
-  // Play authentic native speaker audio from verified dataset with phonetic speech fallback
+  // Play authentic native speaker audio from verified dataset
   const playNativeClip = async () => {
+    if (!card.word_id) return;
     setIsPlayingNative(true);
     setPlayingState('native');
 
-    // 1. Direct CDN authentic dataset audio clip URL (fast, zero serverless delay)
-    const directUrl = selectedLanguage === 'Marwari'
-      ? (card.marwari_audio_url || `/audio/${card.id}_marwari.wav`)
-      : (card.badaga_audio_url || `/audio/${card.id}_badaga.wav`);
+    try {
+      const res = await fetch(`/api/vocabulary/${card.word_id}`);
+      const data = await res.json();
 
-    const audio = new Audio(directUrl);
-
-    audio.onended = () => {
+      if (data.recordings && data.recordings.length > 0) {
+        // Pick the primary recording clip
+        const clipId = data.recordings[0].clip_id;
+        const audio = new Audio(`/api/audio/playback/${clipId}`);
+        audio.onended = () => {
+          setIsPlayingNative(false);
+          setPlayingState(null);
+        };
+        audio.onerror = () => {
+          setIsPlayingNative(false);
+          setPlayingState(null);
+        };
+        await audio.play();
+      } else {
+        setIsPlayingNative(false);
+        setPlayingState(null);
+      }
+    } catch {
       setIsPlayingNative(false);
       setPlayingState(null);
-    };
-
-    audio.onerror = () => {
-      // If remote clip is missing or fails, fall back to phonetic speech
-      speakNativePhonetic();
-    };
-
-    try {
-      await audio.play();
-    } catch {
-      speakNativePhonetic();
     }
   };
 

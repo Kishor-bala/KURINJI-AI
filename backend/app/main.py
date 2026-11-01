@@ -119,7 +119,6 @@ def root():
 
 
 @app.get("/api/health")
-@app.get("/health")
 def health_check():
     """Returns application health, database status, and vocabulary/embedding counts."""
     with get_db_connection() as conn:
@@ -218,7 +217,6 @@ def create_segment(req: AudioSegmentRequest):
 
 
 @app.post("/api/recognize")
-@app.post("/recognize")
 async def recognize_audio(
     file: UploadFile = File(...),
     language: Optional[str] = Form(None),
@@ -230,7 +228,6 @@ async def recognize_audio(
     Processes an incoming query audio recording, extracts its XLS-R representation,
     matches against stored reference embeddings, and returns predicted word with verified meanings.
     """
-    RAW_AUDIO_DIR.mkdir(parents=True, exist_ok=True)
     temp_query_path = RAW_AUDIO_DIR / f"query_{uuid.uuid4().hex[:8]}.wav"
     try:
         with open(temp_query_path, "wb") as buffer:
@@ -280,7 +277,6 @@ async def recognize_audio(
 
 
 @app.get("/api/modules")
-@app.get("/modules")
 def get_learning_modules():
     """Returns the primary learning modules and concept cards for kindergarten to class 5."""
     modules_file = Path(__file__).resolve().parent.parent / "data" / "learning_modules.json"
@@ -292,7 +288,6 @@ def get_learning_modules():
 
 
 @app.post("/api/translate/text")
-@app.post("/translate/text")
 def translate_text(req: TextTranslateRequest):
     """
     Translates a Badaga or Marwari word written in English transliteration
@@ -322,7 +317,6 @@ def translate_text(req: TextTranslateRequest):
 
 
 @app.get("/api/vocabulary")
-@app.get("/vocabulary")
 def get_vocabulary(
     language: Optional[str] = Query(None, pattern="^(Badaga|Marwari)$"),
     limit: int = Query(200, ge=1, le=1000),
@@ -350,7 +344,6 @@ def add_vocabulary_entry(entry: VocabularyCreateRequest):
 
 
 @app.get("/api/vocabulary/{word_id}")
-@app.get("/vocabulary/{word_id}")
 def get_vocabulary_detail(word_id: str):
     """Retrieves vocabulary details and associated reference recordings."""
     vocab = get_vocabulary_by_id(word_id)
@@ -410,7 +403,6 @@ def extract_single_embedding(clip_id: str = Form(...)):
 
 
 @app.get("/api/audio/playback/{clip_id}")
-@app.get("/audio/playback/{clip_id}")
 def stream_audio_clip(clip_id: str):
     """Serves audio clip for browser playback."""
     rec = get_recording_by_id(clip_id)
@@ -422,3 +414,10 @@ def stream_audio_clip(clip_id: str):
         raise HTTPException(status_code=404, detail="Audio file missing on disk.")
 
     return FileResponse(str(audio_path), media_type="audio/wav")
+
+
+# Mount static production frontend build if available (single-service Render deployment)
+frontend_dist = PROJECT_ROOT / "frontend" / "dist"
+if frontend_dist.is_dir():
+    from fastapi.staticfiles import StaticFiles
+    app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="frontend")

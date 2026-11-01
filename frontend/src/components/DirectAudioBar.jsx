@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { Mic, Square, Search, X, Loader2 } from 'lucide-react';
-import initialModulesData from '../data/learning_modules.json';
 
 /**
  * Encodes Float32 PCM audio samples directly into a 16-bit Mono WAV Blob (16,000 Hz).
@@ -37,6 +36,32 @@ function encodeWAV(samples, sampleRate = 16000) {
   }
 
   return new Blob([view], { type: 'audio/wav' });
+}
+
+/**
+ * Downsamples audio buffer from any hardware sample rate (e.g. 48kHz, 44.1kHz)
+ * strictly to 16,000 Hz. Eliminates pitch-drop and slow-motion rumble.
+ */
+function downsampleTo16k(buffer, inputSampleRate) {
+  if (inputSampleRate === 16000) return buffer;
+  const ratio = inputSampleRate / 16000;
+  const newLength = Math.round(buffer.length / ratio);
+  const result = new Float32Array(newLength);
+  let offsetResult = 0;
+  let offsetBuffer = 0;
+  while (offsetResult < result.length) {
+    const nextOffsetBuffer = Math.round((offsetResult + 1) * ratio);
+    let accum = 0;
+    let count = 0;
+    for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i++) {
+      accum += buffer[i];
+      count++;
+    }
+    result[offsetResult] = count > 0 ? accum / count : 0;
+    offsetResult++;
+    offsetBuffer = nextOffsetBuffer;
+  }
+  return result;
 }
 
 export default function DirectAudioBar({
@@ -114,13 +139,16 @@ export default function DirectAudioBar({
       streamRef.current.getTracks().forEach((track) => track.stop());
     }
 
+    const inputSampleRate = audioContextRef.current?.sampleRate || 48000;
     const rawSamples = new Float32Array(recordedSamplesRef.current);
-    if (rawSamples.length < 4000) {
+    if (rawSamples.length < inputSampleRate * 0.3) {
       setStatusNotice('Recording too short. Speak a word clearly.');
       return;
     }
 
-    const wavBlob = encodeWAV(rawSamples, 16000);
+    // Downsample from hardware rate (44.1k/48k) to standard 16kHz speech format
+    const samples16k = downsampleTo16k(rawSamples, inputSampleRate);
+    const wavBlob = encodeWAV(samples16k, 16000);
     submitAudioForRecognition(wavBlob);
   };
 
@@ -199,61 +227,24 @@ export default function DirectAudioBar({
     } catch {}
   };
 
-  // Direct text search with instant local matching and server fallback
+  // Direct text search
   const handleTextSearch = async (e) => {
     e.preventDefault();
-    const query = searchQuery.trim();
-    if (!query || isAnalyzing) return;
+    if (!searchQuery.trim() || isAnalyzing) return;
 
     setIsAnalyzing(true);
     setStatusNotice('');
 
-    // 1. Instant local match across all curriculum cards (0ms)
-    const clean = query.toLowerCase();
-    const localMatch = (initialModulesData?.cards || []).find((c) => {
-      const bWord = (c.badaga?.word || '').toLowerCase();
-      const bTam = c.badaga?.tamil_script || '';
-      const mWord = (c.marwari?.word || '').toLowerCase();
-      const mTam = c.marwari?.tamil_script || '';
-      const eWord = (c.english?.word || '').toLowerCase();
-      const tWord = c.tamil?.word || '';
-      const wid = (c.word_id || '').toLowerCase();
-      const ill = (c.illustration_name || '').toLowerCase();
-      return (
-        bWord === clean ||
-        bTam === query ||
-        mWord === clean ||
-        mTam === query ||
-        eWord === clean ||
-        tWord === query ||
-        wid === clean ||
-        ill === clean ||
-        bWord.startsWith(clean) ||
-        eWord.startsWith(clean) ||
-        clean.includes(bWord) ||
-        clean.includes(eWord)
-      );
-    });
-
-    if (localMatch) {
-      onSelectCard(localMatch);
-      setSearchQuery('');
-      setIsAnalyzing(false);
-      return;
-    }
-
-    // 2. Fall back to backend /api/translate/text for 3,319 word dictionary
     try {
       const res = await fetch('/api/translate/text', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: query,
+          text: searchQuery.trim(),
           language: selectedLanguage,
         }),
       });
 
-      if (!res.ok) throw new Error('Search failed');
       const data = await res.json();
       if (data.learning_card) {
         onSelectCard(data.learning_card);
@@ -262,10 +253,10 @@ export default function DirectAudioBar({
         fetchCardByWordId(data.word_id, data);
         setSearchQuery('');
       } else {
-        setStatusNotice(`Word "${query}" not found.`);
+        setStatusNotice(`Word "${searchQuery}" not found.`);
       }
     } catch {
-      setStatusNotice(`Word "${query}" not found in primary curriculum.`);
+      setStatusNotice('Search failed.');
     } finally {
       setIsAnalyzing(false);
     }

@@ -1,5 +1,4 @@
 import os
-import tempfile
 from pathlib import Path
 
 # Base paths
@@ -8,18 +7,11 @@ PROJECT_ROOT = BASE_DIR.parent
 DATA_DIR = BASE_DIR / "data"
 
 # Audio and Database storage
-if os.name != "nt" and os.path.exists("/tmp"):
-    AUDIO_DIR = Path("/tmp/kurinji/audio")
-    RAW_AUDIO_DIR = AUDIO_DIR / "raw"
-    CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
-    DATABASE_PATH = Path("/tmp/vocabulary.db")
-else:
-    AUDIO_DIR = DATA_DIR / "audio"
-    RAW_AUDIO_DIR = AUDIO_DIR / "raw"
-    CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
-    DATABASE_PATH = DATA_DIR / "vocabulary.db"
-
+AUDIO_DIR = DATA_DIR / "audio"
+RAW_AUDIO_DIR = AUDIO_DIR / "raw"
+CLIPS_AUDIO_DIR = AUDIO_DIR / "clips"
 EMBEDDINGS_DIR = DATA_DIR / "embeddings"
+DATABASE_PATH = DATA_DIR / "vocabulary.db"
 
 # Original dataset location inside project
 DATASET_DIR = PROJECT_ROOT / "dataset"
@@ -46,9 +38,6 @@ DEFAULT_MARGIN_THRESHOLD = 0.005  # Minimum difference between top-1 and top-2 c
 RECOGNITION_AGGREGATION_METHOD = "max"  # Options: 'max', 'average', 'top3_average'
 USE_EMBEDDING_CENTERING = True  # Eliminates Transformer anisotropy for calibrated discrimination
 
-# Ensure required runtime directories exist (safe for read-only serverless filesystems)
-try:
-    for directory in [DATA_DIR, AUDIO_DIR, RAW_AUDIO_DIR, CLIPS_AUDIO_DIR]:
-        directory.mkdir(parents=True, exist_ok=True)
-except OSError:
-    pass
+# Ensure required runtime directories exist
+for directory in [DATA_DIR, AUDIO_DIR, RAW_AUDIO_DIR, CLIPS_AUDIO_DIR, EMBEDDINGS_DIR]:
+    directory.mkdir(parents=True, exist_ok=True)

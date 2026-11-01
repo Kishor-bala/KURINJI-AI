@@ -84,21 +84,6 @@ export default function ModuleGrid({
                 <div className="card-native-header">
                   <span className="native-primary-word">{nativeWord}</span>
                   <span className="native-script-hint">({nativeScript})</span>
-                  <button
-                    type="button"
-                    className="inline-audio-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const directUrl = selectedLanguage === 'Marwari'
-                        ? (card.marwari_audio_url || `/audio/${card.id}_marwari.wav`)
-                        : (card.badaga_audio_url || `/audio/${card.id}_badaga.wav`);
-                      const a = new Audio(directUrl);
-                      a.play().catch(() => quickSpeak(e, nativeScript || nativeWord, selectedLanguage === 'Marwari' ? 'hi-IN' : 'ta-IN'));
-                    }}
-                    title={`Listen ${selectedLanguage} native speaker recording`}
-                  >
-                    <Volume2 size={13} />
-                  </button>
                 </div>
 
                 {/* 2. Target Bridge Languages: Tamil & English */}

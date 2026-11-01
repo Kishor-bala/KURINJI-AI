@@ -1,29 +1,27 @@
+import torch
 import numpy as np
-from typing import Optional, Tuple, Any
+from typing import Optional, Tuple
+from backend.app.models.xlsr_encoder import XLSREncoder
 from backend.app.config import TARGET_SAMPLE_RATE, DEFAULT_POOLING_METHOD
-
-try:
-    import torch
-    from backend.app.models.xlsr_encoder import XLSREncoder
-    HAS_TORCH = True
-except (ImportError, Exception):
-    torch = None
-    XLSREncoder = None
-    HAS_TORCH = False
 
 
 def pool_frame_representations(
-    hidden_states: Any,
-    valid_mask: Optional[Any] = None,
+    hidden_states: torch.Tensor,
+    valid_mask: Optional[torch.Tensor] = None,
     method: str = DEFAULT_POOLING_METHOD,
 ) -> np.ndarray:
     """
     Performs pooling over valid audio frames to generate a single representation vector.
     Applies L2 normalization.
-    """
-    if not HAS_TORCH or torch is None:
-        raise RuntimeError("PyTorch is not available.")
 
+    Args:
+        hidden_states: Tensor of shape (batch_size, T, hidden_dim).
+        valid_mask: Tensor of shape (batch_size, T) indicating unpadded frames.
+        method: Pooling method, currently 'mean' baseline.
+
+    Returns:
+        1D numpy array of shape (hidden_dim,) with L2 norm = 1.0.
+    """
     # Ensure shapes: (1, T, D)
     if hidden_states.ndim == 2:
         hidden_states = hidden_states.unsqueeze(0)
@@ -37,12 +35,14 @@ def pool_frame_representations(
     expanded_mask = valid_mask.unsqueeze(-1).float()
 
     if method == "mean":
-        summed = torch.sum(hidden_states * expanded_mask, dim=1)
+        # Sum valid frames and divide by valid frame count
+        summed = torch.sum(hidden_states * expanded_mask, dim=1)  # Shape: (batch_size, hidden_dim)
         counts = torch.sum(expanded_mask, dim=1).clamp(min=1.0)
         pooled = summed / counts
     else:
         raise ValueError(f"Unsupported pooling method: {method}. Baseline supported is 'mean'.")
 
+    # Squeeze batch dimension for single utterance
     vector = pooled.squeeze(0).cpu().numpy().astype(np.float32)
 
     # Apply strict L2 Normalization
@@ -63,13 +63,10 @@ def extract_audio_embedding(
 ) -> Tuple[np.ndarray, Optional[np.ndarray]]:
     """
     End-to-end pipeline to compute a normalized XLS-R embedding from raw waveform.
-    """
-    if not HAS_TORCH or XLSREncoder is None:
-        raise RuntimeError(
-            "Local XLS-R PyTorch encoder is not available in lightweight serverless mode. "
-            "Please configure GEMINI_API_KEY in your Vercel environment variables for speech recognition."
-        )
 
+    Returns:
+        (pooled_embedding_1024d, optional_frame_representations)
+    """
     encoder = XLSREncoder.get_instance()
     hidden_states, frame_mask = encoder.extract_hidden_states(waveform, sample_rate=sample_rate)
 

@@ -1,14 +1,8 @@
 import os
-import wave
 from pathlib import Path
 from typing import Tuple, Dict, Any, Union
+import soundfile as sf
 import numpy as np
-
-try:
-    import soundfile as sf
-except (ImportError, OSError):
-    sf = None
-
 from backend.app.config import (
     MIN_AUDIO_DURATION,
     MAX_AUDIO_DURATION,
@@ -34,46 +28,19 @@ def validate_audio_file(file_path: Union[str, Path]) -> Tuple[bool, str, Dict[st
 
     duration = 0.0
     metadata = {}
-    loaded = False
-
-    # 1. Built-in standard wave reader (pure Python, zero C dependencies)
     try:
-        with wave.open(str(path), "rb") as wf:
-            framerate = wf.getframerate()
-            channels = wf.getnchannels()
-            frames = wf.getnframes()
-            duration = frames / float(framerate) if framerate > 0 else 0.0
-            metadata = {
-                "sample_rate": framerate,
-                "channels": channels,
-                "duration": duration,
-                "format": "WAV",
-                "subtype": f"{wf.getsampwidth() * 8}-bit PCM",
-                "frames": frames,
-            }
-            loaded = True
-    except Exception:
-        pass
-
-    # 2. Try soundfile if available
-    if not loaded and sf is not None:
-        try:
-            info = sf.info(str(path))
-            duration = info.duration
-            metadata = {
-                "sample_rate": info.samplerate,
-                "channels": info.channels,
-                "duration": duration,
-                "format": info.format,
-                "subtype": info.subtype,
-                "frames": info.frames,
-            }
-            loaded = True
-        except Exception:
-            pass
-
-    # 3. Fallback to PyAV for WebM, Opus, AAC, and other browser containers
-    if not loaded:
+        info = sf.info(str(path))
+        duration = info.duration
+        metadata = {
+            "sample_rate": info.samplerate,
+            "channels": info.channels,
+            "duration": duration,
+            "format": info.format,
+            "subtype": info.subtype,
+            "frames": info.frames,
+        }
+    except Exception as sf_err:
+        # Fallback to PyAV for WebM, Opus, AAC, and other browser containers
         try:
             import av
             with av.open(str(path)) as container:
@@ -88,12 +55,8 @@ def validate_audio_file(file_path: Union[str, Path]) -> Tuple[bool, str, Dict[st
                     "format": container.format.name,
                     "subtype": audio_stream.codec_context.name,
                 }
-                loaded = True
-        except Exception:
-            pass
-
-    if not loaded:
-        return False, f"Corrupted or unreadable audio file: {path.name}", {}
+        except Exception as av_err:
+            return False, f"Corrupted or unreadable audio file: {sf_err}", {}
 
     if duration < MIN_AUDIO_DURATION:
         return (
@@ -111,8 +74,7 @@ def validate_audio_file(file_path: Union[str, Path]) -> Tuple[bool, str, Dict[st
 
     # Check for complete silence or digital zero audio
     try:
-        from backend.app.audio.preprocessing import load_and_standardize_audio
-        data, _ = load_and_standardize_audio(path, trim_silence=False)
+        data, _ = sf.read(str(path), dtype="float32")
         max_amplitude = np.max(np.abs(data)) if data.size > 0 else 0.0
         metadata["max_amplitude"] = float(max_amplitude)
 
