@@ -119,6 +119,7 @@ def root():
 
 
 @app.get("/api/health")
+@app.get("/health")
 def health_check():
     """Returns application health, database status, and vocabulary/embedding counts."""
     with get_db_connection() as conn:
@@ -217,6 +218,7 @@ def create_segment(req: AudioSegmentRequest):
 
 
 @app.post("/api/recognize")
+@app.post("/recognize")
 async def recognize_audio(
     file: UploadFile = File(...),
     language: Optional[str] = Form(None),
@@ -277,6 +279,7 @@ async def recognize_audio(
 
 
 @app.get("/api/modules")
+@app.get("/modules")
 def get_learning_modules():
     """Returns the primary learning modules and concept cards for kindergarten to class 5."""
     modules_file = Path(__file__).resolve().parent.parent / "data" / "learning_modules.json"
@@ -288,6 +291,7 @@ def get_learning_modules():
 
 
 @app.post("/api/translate/text")
+@app.post("/translate/text")
 def translate_text(req: TextTranslateRequest):
     """
     Translates a Badaga or Marwari word written in English transliteration
@@ -317,6 +321,7 @@ def translate_text(req: TextTranslateRequest):
 
 
 @app.get("/api/vocabulary")
+@app.get("/vocabulary")
 def get_vocabulary(
     language: Optional[str] = Query(None, pattern="^(Badaga|Marwari)$"),
     limit: int = Query(200, ge=1, le=1000),
@@ -344,6 +349,7 @@ def add_vocabulary_entry(entry: VocabularyCreateRequest):
 
 
 @app.get("/api/vocabulary/{word_id}")
+@app.get("/vocabulary/{word_id}")
 def get_vocabulary_detail(word_id: str):
     """Retrieves vocabulary details and associated reference recordings."""
     vocab = get_vocabulary_by_id(word_id)
