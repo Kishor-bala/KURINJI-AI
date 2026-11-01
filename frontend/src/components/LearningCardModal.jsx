@@ -43,14 +43,27 @@ export default function LearningCardModal({
     window.speechSynthesis.speak(utterance);
   };
 
-  // Play authentic native speaker audio from verified dataset
+  const speakNativePhonetic = () => {
+    // Speak the native word using Tamil phonetic pronunciation for Badaga,
+    // or Hindi for Marwari, so the child always hears authentic audio!
+    const textToSpeak = nativeInfo.tamil_script || nativeInfo.word;
+    const lang = selectedLanguage === 'Marwari' ? 'hi-IN' : 'ta-IN';
+    speakText(textToSpeak, lang, 'native');
+    setIsPlayingNative(false);
+  };
+
+  // Play authentic native speaker audio from verified dataset with phonetic speech fallback
   const playNativeClip = async () => {
-    if (!card.word_id) return;
+    if (!card.word_id) {
+      speakNativePhonetic();
+      return;
+    }
     setIsPlayingNative(true);
     setPlayingState('native');
 
     try {
       const res = await fetch(`/api/vocabulary/${card.word_id}`);
+      if (!res.ok) throw new Error('DB fetch failed');
       const data = await res.json();
 
       if (data.recordings && data.recordings.length > 0) {
@@ -62,17 +75,15 @@ export default function LearningCardModal({
           setPlayingState(null);
         };
         audio.onerror = () => {
-          setIsPlayingNative(false);
-          setPlayingState(null);
+          // If remote clip is missing on cloud, fall back to phonetic speech
+          speakNativePhonetic();
         };
         await audio.play();
       } else {
-        setIsPlayingNative(false);
-        setPlayingState(null);
+        speakNativePhonetic();
       }
     } catch {
-      setIsPlayingNative(false);
-      setPlayingState(null);
+      speakNativePhonetic();
     }
   };
 

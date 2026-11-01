@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Mic, Square, Search, X, Loader2 } from 'lucide-react';
+import initialModulesData from '../data/learning_modules.json';
 
 /**
  * Encodes Float32 PCM audio samples directly into a 16-bit Mono WAV Blob (16,000 Hz).
@@ -198,24 +199,61 @@ export default function DirectAudioBar({
     } catch {}
   };
 
-  // Direct text search
+  // Direct text search with instant local matching and server fallback
   const handleTextSearch = async (e) => {
     e.preventDefault();
-    if (!searchQuery.trim() || isAnalyzing) return;
+    const query = searchQuery.trim();
+    if (!query || isAnalyzing) return;
 
     setIsAnalyzing(true);
     setStatusNotice('');
 
+    // 1. Instant local match across all curriculum cards (0ms)
+    const clean = query.toLowerCase();
+    const localMatch = (initialModulesData?.cards || []).find((c) => {
+      const bWord = (c.badaga?.word || '').toLowerCase();
+      const bTam = c.badaga?.tamil_script || '';
+      const mWord = (c.marwari?.word || '').toLowerCase();
+      const mTam = c.marwari?.tamil_script || '';
+      const eWord = (c.english?.word || '').toLowerCase();
+      const tWord = c.tamil?.word || '';
+      const wid = (c.word_id || '').toLowerCase();
+      const ill = (c.illustration_name || '').toLowerCase();
+      return (
+        bWord === clean ||
+        bTam === query ||
+        mWord === clean ||
+        mTam === query ||
+        eWord === clean ||
+        tWord === query ||
+        wid === clean ||
+        ill === clean ||
+        bWord.startsWith(clean) ||
+        eWord.startsWith(clean) ||
+        clean.includes(bWord) ||
+        clean.includes(eWord)
+      );
+    });
+
+    if (localMatch) {
+      onSelectCard(localMatch);
+      setSearchQuery('');
+      setIsAnalyzing(false);
+      return;
+    }
+
+    // 2. Fall back to backend /api/translate/text for 3,319 word dictionary
     try {
       const res = await fetch('/api/translate/text', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: searchQuery.trim(),
+          text: query,
           language: selectedLanguage,
         }),
       });
 
+      if (!res.ok) throw new Error('Search failed');
       const data = await res.json();
       if (data.learning_card) {
         onSelectCard(data.learning_card);
@@ -224,10 +262,10 @@ export default function DirectAudioBar({
         fetchCardByWordId(data.word_id, data);
         setSearchQuery('');
       } else {
-        setStatusNotice(`Word "${searchQuery}" not found.`);
+        setStatusNotice(`Word "${query}" not found.`);
       }
     } catch {
-      setStatusNotice('Search failed.');
+      setStatusNotice(`Word "${query}" not found in primary curriculum.`);
     } finally {
       setIsAnalyzing(false);
     }

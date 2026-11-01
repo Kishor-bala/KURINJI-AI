@@ -409,6 +409,7 @@ def extract_single_embedding(clip_id: str = Form(...)):
 
 
 @app.get("/api/audio/playback/{clip_id}")
+@app.get("/audio/playback/{clip_id}")
 def stream_audio_clip(clip_id: str):
     """Serves audio clip for browser playback."""
     rec = get_recording_by_id(clip_id)
