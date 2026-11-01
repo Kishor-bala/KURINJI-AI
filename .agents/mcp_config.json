@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "taste-skill": {
+      "command": "node",
+      "args": [
+        "c:/Users/bbipi/Desktop/KURINJI/.agents/skills/design-taste-frontend/mcp-server.mjs"
+      ]
+    }
+  }
+}

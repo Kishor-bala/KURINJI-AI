@@ -1,0 +1,989 @@
+@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800;900&family=Imbue:opsz,wght@10..72,400;700&family=Noto+Sans+Tamil:wght@400;600;700;800&display=swap');
+
+:root {
+  /* Warm tactile educational palette */
+  --bg-app: #f5f2ef;
+  --bg-surface: #ffffff;
+  --bg-muted: #ede7e3;
+  --bg-subtle: #f8f6f4;
+  --bg-tint-sage: #ecfdf5;
+  --bg-tint-amber: #fffbeb;
+  --bg-tint-sky: #f0f9ff;
+  --bg-tint-rose: #fff1f2;
+
+  --border-subtle: #e2dbd5;
+  --border-medium: #cfc6be;
+  --border-strong: #9c9187;
+
+  --accent-green: #1b633e;
+  --accent-green-hover: #154f31;
+  --accent-green-tint: #eaf6ef;
+
+  --accent-lake: #1d5f8a;
+  --accent-lake-hover: #174b6e;
+  --accent-lake-tint: #edf5fa;
+
+  --accent-ochre: #c25e24;
+  --accent-ochre-tint: #fdf2ec;
+
+  --ink-primary: #1f1b18;
+  --ink-secondary: #3b3530;
+  --ink-muted: #6b635c;
+  --ink-faint: #9c938b;
+
+  --font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Imbue', serif;
+  --font-tamil: 'Noto Sans Tamil', 'Albert Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100%;
+  background-color: var(--bg-app);
+  color: var(--ink-primary);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+.tamil-font {
+  font-family: var(--font-tamil);
+}
+
+/* ==========================================================================
+   Root Learning Workspace (Tactile Kindergarten Flashbook)
+   ========================================================================== */
+.learning-workspace-root {
+  max-width: 1380px;
+  margin: 0 auto;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 28px 48px;
+}
+
+/* ==========================================================================
+   Top Header Navigation
+   ========================================================================== */
+.primary-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0 24px;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.header-brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.brand-main-title {
+  font-family: var(--font-display);
+  font-size: 2.3rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--ink-primary);
+  line-height: 1;
+}
+
+.brand-stage-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: var(--accent-green-tint);
+  color: var(--accent-green);
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.brand-subtitle {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.header-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dialect-selector-group {
+  display: flex;
+  background: var(--bg-muted);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.dialect-btn {
+  background: transparent;
+  border: none;
+  padding: 7px 18px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dialect-btn.active {
+  background: var(--bg-surface);
+  color: var(--accent-green);
+}
+
+.wordbank-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.wordbank-toggle-btn:hover {
+  background: var(--bg-muted);
+  border-color: var(--border-medium);
+}
+
+.wordbank-toggle-btn.active {
+  background: var(--ink-primary);
+  border-color: var(--ink-primary);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Voice Input Strip (Direct 16kHz WAV Microphone & Search)
+   ========================================================================== */
+.voice-input-strip {
+  margin-bottom: 28px;
+}
+
+.direct-audio-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 10px 16px;
+}
+
+.audio-mic-action-group {
+  flex-shrink: 0;
+}
+
+.direct-mic-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-green);
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.direct-mic-btn:hover:not(:disabled) {
+  background: var(--accent-green-hover);
+  transform: translateY(-1px);
+}
+
+.direct-mic-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.direct-mic-btn.active-recording {
+  background: #b91c1c;
+}
+
+.spin-animate {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.quick-search-form {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 14px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.quick-search-form:focus-within {
+  border-color: var(--accent-green);
+  background: var(--bg-surface);
+}
+
+.search-lead-icon {
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+.quick-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-family);
+  font-size: 0.92rem;
+  color: var(--ink-primary);
+}
+
+.quick-search-input::placeholder {
+  color: var(--ink-faint);
+}
+
+.clear-search-btn {
+  background: transparent;
+  border: none;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.audio-status-notice {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--accent-lake);
+  white-space: nowrap;
+  background: var(--accent-lake-tint);
+  padding: 5px 12px;
+  border-radius: 6px;
+}
+
+/* ==========================================================================
+   Topics Section & Concept Cards Grid
+   ========================================================================== */
+.topics-section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.topics-nav-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.topic-tab-pill {
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.topic-tab-pill:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-medium);
+}
+
+.topic-tab-pill.active {
+  background: var(--bg-surface);
+  border-color: var(--accent-green);
+}
+
+.topic-tab-pill.active .topic-tab-title {
+  color: var(--accent-green);
+}
+
+.topic-tab-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--ink-primary);
+  display: inline-flex;
+  gap: 6px;
+}
+
+.topic-tab-count {
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.topic-tab-tamil {
+  font-family: var(--font-tamil);
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+/* Grid of Concept Cards */
+.cards-mosaic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 22px;
+}
+
+.concept-visual-card {
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  position: relative;
+  height: 100%;
+  min-height: fit-content;
+  transition: transform 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.concept-visual-card:hover,
+.concept-visual-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--accent-green);
+}
+
+.card-illustration-frame {
+  width: 100%;
+  height: 146px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  position: relative;
+  background: var(--bg-subtle);
+}
+
+.card-category-subtle-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg-muted);
+  color: var(--ink-secondary);
+  z-index: 2;
+}
+
+.concept-visual-card:hover .card-illustration-frame svg,
+.concept-visual-card:hover .card-illustration-frame img {
+  transform: scale(1.08) translateY(-2px);
+}
+
+.card-illustration-frame svg,
+.card-illustration-frame img {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Thematic Color Backgrounds for Cartoon Illustrations */
+.card-illustration-frame.theme-body,
+.modal-illustration-hero.theme-body {
+  background: #f0fdfa;
+}
+.card-illustration-frame.theme-family,
+.modal-illustration-hero.theme-family {
+  background: #fff7ed;
+}
+.card-illustration-frame.theme-nature,
+.modal-illustration-hero.theme-nature {
+  background: #f0fdf4;
+}
+.card-illustration-frame.theme-animals,
+.modal-illustration-hero.theme-animals {
+  background: #fffbeb;
+}
+.card-illustration-frame.theme-numbers,
+.modal-illustration-hero.theme-numbers {
+  background: #eff6ff;
+}
+.card-illustration-frame.theme-school,
+.modal-illustration-hero.theme-school {
+  background: #f5f5f4;
+}
+
+.card-info-pane {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.card-native-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.native-primary-word {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink-primary);
+  letter-spacing: -0.01em;
+}
+
+.native-script-hint {
+  font-family: var(--font-tamil);
+  font-size: 0.88rem;
+  color: var(--accent-green);
+  font-weight: 700;
+}
+
+.card-target-cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-subtle);
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.target-language-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.target-lang-label {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--ink-muted);
+  min-width: 54px;
+  flex-shrink: 0;
+}
+
+.target-word-val {
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: var(--ink-primary);
+  flex: 1;
+}
+
+.target-word-val.english-val {
+  font-size: 0.92rem;
+}
+
+.inline-audio-btn {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-medium);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.inline-audio-btn:hover {
+  background: var(--accent-green);
+  color: #ffffff;
+  border-color: var(--accent-green);
+}
+
+.card-phonics-strip {
+  background: var(--bg-subtle);
+  border: 1px dashed var(--border-medium);
+  border-radius: 6px;
+  padding: 8px 10px;
+  text-align: center;
+  margin-top: auto;
+  word-break: break-word;
+}
+
+.phonics-formula-text {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+
+/* ==========================================================================
+   Multi-Sensory Phonics Learning Card Modal
+   ========================================================================== */
+.learning-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 27, 24, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.learning-modal-container {
+  width: min(880px, 94vw);
+  max-width: 880px;
+  background: var(--bg-surface);
+  border-radius: 18px;
+  border: 2px solid var(--border-subtle);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 92svh;
+  transition: width 0.2s ease-out;
+}
+
+.modal-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+
+.modal-topic-badge {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--ink-muted);
+  background: var(--bg-muted);
+  padding: 5px 12px;
+  border-radius: 6px;
+}
+
+.modal-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-muted);
+  border: 1.5px solid var(--border-subtle);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.modal-nav-btn:hover:not(:disabled) {
+  background: var(--bg-surface);
+  border-color: var(--border-medium);
+  color: var(--ink-primary);
+}
+
+.modal-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.modal-close-btn {
+  background: var(--bg-muted);
+  border: 1.5px solid var(--border-subtle);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-secondary);
+  transition: background-color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.modal-scroll-area {
+  padding: 20px 24px 32px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Illustration Hero Banner */
+.modal-illustration-hero {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border-radius: 14px;
+  padding: 18px 22px;
+}
+
+.illustration-display-box {
+  flex-shrink: 0;
+}
+
+.hero-titles-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hero-english-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: var(--ink-primary);
+  letter-spacing: -0.02em;
+}
+
+.hero-tamil-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--accent-green);
+}
+
+/* Pedagogical Tiers */
+.learning-tier-card {
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.native-tier-card {
+  background: var(--bg-tint-sage);
+}
+
+.tamil-tier-card {
+  background: var(--bg-subtle);
+}
+
+.english-tier-card {
+  background: var(--bg-tint-sky);
+}
+
+.tier-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tier-section-heading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--ink-secondary);
+}
+
+.native-audio-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--accent-green);
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.native-audio-action-btn:hover:not(:disabled) {
+  background: var(--accent-green-hover);
+  transform: translateY(-1px);
+}
+
+.native-audio-action-btn.playing {
+  background: #047857;
+}
+
+.bridge-listen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-medium);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.bridge-listen-btn:hover {
+  background: var(--ink-primary);
+  color: #ffffff;
+  border-color: var(--ink-primary);
+}
+
+.bridge-listen-btn.playing {
+  background: var(--accent-green);
+  color: #ffffff;
+  border-color: var(--accent-green);
+}
+
+.native-pronounce-box {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.native-spoken-text {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: var(--ink-primary);
+}
+
+.native-script-text {
+  font-family: var(--font-tamil);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent-green);
+}
+
+.native-phonetic-caption {
+  font-size: 0.84rem;
+  color: var(--ink-muted);
+}
+
+/* Phonics Equation Row - Tactile 3D Alphabet Blocks */
+.phonics-equation-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.equation-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--ink-muted);
+}
+
+.equation-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  row-gap: 12px;
+  width: 100%;
+}
+
+.letter-unit-chip {
+  background: #ffffff;
+  border: 2px solid #cfc6be;
+  border-bottom: 4px solid #ad9f94;
+  min-width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--ink-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  transition: transform 0.1s ease, border-color 0.1s ease;
+}
+
+.letter-unit-chip:hover {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  transform: translateY(-1px);
+}
+
+.letter-unit-chip.active-unit {
+  background: var(--accent-green-tint);
+  border-color: var(--accent-green);
+  border-bottom-width: 2px;
+  transform: translateY(2px);
+  color: var(--accent-green);
+}
+
+.math-operator {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ink-faint);
+}
+
+.math-equals {
+  color: var(--ink-muted);
+  margin: 0 4px;
+}
+
+.blended-result-chip {
+  background: var(--accent-green);
+  color: #ffffff;
+  border: 2px solid var(--accent-green-hover);
+  border-bottom: 4px solid #0f3c24;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+
+.blended-result-chip:hover {
+  background: var(--accent-green-hover);
+  transform: translateY(-1px);
+}
+
+.blended-result-chip.active-unit {
+  border-bottom-width: 2px;
+  transform: translateY(2px);
+}
+
+.usage-sentence-box {
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-medium);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  display: flex;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.sentence-label {
+  font-weight: 800;
+  color: var(--ink-muted);
+  flex-shrink: 0;
+}
+
+.sentence-text {
+  color: var(--ink-secondary);
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Full Vocabulary Manager Modal (Archive)
+   ========================================================================== */
+.vocab-manager-panel {
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.vocab-manager-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+}
+
+.vocab-manager-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--ink-primary);
+}
+
+.vocab-search-row {
+  display: flex;
+  gap: 12px;
+}
+
+.vocab-search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+.vocab-search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.9rem;
+  color: var(--ink-primary);
+}
+
+.vocab-table-wrap {
+  max-height: 520px;
+  overflow-y: auto;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.vocab-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  text-align: left;
+}
+
+.vocab-table th {
+  background: var(--bg-muted);
+  padding: 12px 14px;
+  font-weight: 800;
+  color: var(--ink-muted);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.vocab-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.vocab-table tr:hover td {
+  background: var(--bg-subtle);
+}
