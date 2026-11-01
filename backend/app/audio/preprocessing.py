@@ -1,7 +1,10 @@
 from pathlib import Path
 from typing import Tuple, Union, Optional
 import numpy as np
-import soundfile as sf
+try:
+    import soundfile as sf
+except Exception:
+    sf = None
 from backend.app.config import TARGET_SAMPLE_RATE, SILENCE_TOP_DB
 
 
@@ -26,10 +29,33 @@ def load_and_standardize_audio(
     data = None
     sr = None
 
-    # Load audio data using soundfile first (faster, reliable PCM decoding)
-    try:
-        data, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    except Exception:
+    # Load audio data using soundfile first if available
+    if sf is not None:
+        try:
+            data, sr = sf.read(str(path), dtype="float32", always_2d=False)
+        except Exception:
+            pass
+
+    # Fallback 1: Python standard wave module (0 external dependencies)
+    if data is None:
+        try:
+            import wave
+            with wave.open(str(path), 'rb') as wf:
+                sr = wf.getframerate()
+                n_frames = wf.getnframes()
+                n_channels = wf.getnchannels()
+                sampwidth = wf.getsampwidth()
+                raw_bytes = wf.readframes(n_frames)
+                if sampwidth == 2:
+                    data = np.frombuffer(raw_bytes, dtype=np.int16).astype(np.float32) / 32768.0
+                elif sampwidth == 4:
+                    data = np.frombuffer(raw_bytes, dtype=np.int32).astype(np.float32) / 2147483648.0
+                elif sampwidth == 1:
+                    data = (np.frombuffer(raw_bytes, dtype=np.uint8).astype(np.float32) - 128.0) / 128.0
+                if n_channels > 1 and data is not None:
+                    data = data.reshape(-1, n_channels)
+        except Exception:
+            pass
         # Fallback 1: Try PyAV for WebM, Opus, AAC, Ogg, MP3
         try:
             import av
@@ -122,5 +148,18 @@ def save_standardized_audio(
 
     # Clip to avoid overflow before converting to PCM_16
     clipped = np.clip(waveform, -1.0, 1.0)
-    sf.write(str(out_path), clipped, sample_rate, subtype="PCM_16")
+    if sf is not None:
+        try:
+            sf.write(str(out_path), clipped, sample_rate, subtype="PCM_16")
+            return out_path
+        except Exception:
+            pass
+
+    import wave
+    pcm16 = (clipped * 32767.0).astype(np.int16)
+    with wave.open(str(out_path), "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sample_rate)
+        wf.writeframes(pcm16.tobytes())
     return out_path

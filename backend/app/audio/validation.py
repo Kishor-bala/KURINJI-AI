@@ -1,7 +1,10 @@
 import os
 from pathlib import Path
 from typing import Tuple, Dict, Any, Union
-import soundfile as sf
+try:
+    import soundfile as sf
+except Exception:
+    sf = None
 import numpy as np
 from backend.app.config import (
     MIN_AUDIO_DURATION,
@@ -28,18 +31,20 @@ def validate_audio_file(file_path: Union[str, Path]) -> Tuple[bool, str, Dict[st
 
     duration = 0.0
     metadata = {}
-    try:
-        info = sf.info(str(path))
-        duration = info.duration
-        metadata = {
-            "sample_rate": info.samplerate,
-            "channels": info.channels,
-            "duration": duration,
-            "format": info.format,
-            "subtype": info.subtype,
-            "frames": info.frames,
-        }
-    except Exception as sf_err:
+    if sf is not None:
+        try:
+            info = sf.info(str(path))
+            duration = info.duration
+            metadata = {
+                "sample_rate": info.samplerate,
+                "channels": info.channels,
+                "duration": duration,
+                "format": info.format,
+                "subtype": info.subtype,
+                "frames": info.frames,
+            }
+        except Exception:
+            pass
         # Fallback 1: Python standard library wave module for WAV files
         try:
             import wave
@@ -89,7 +94,11 @@ def validate_audio_file(file_path: Union[str, Path]) -> Tuple[bool, str, Dict[st
 
     # Check for complete silence or digital zero audio
     try:
-        data, _ = sf.read(str(path), dtype="float32")
+        if sf is not None:
+            data, _ = sf.read(str(path), dtype="float32")
+        else:
+            from backend.app.audio.preprocessing import load_and_standardize_audio
+            data, _ = load_and_standardize_audio(path, trim_silence=False)
         max_amplitude = np.max(np.abs(data)) if data.size > 0 else 0.0
         metadata["max_amplitude"] = float(max_amplitude)
 
