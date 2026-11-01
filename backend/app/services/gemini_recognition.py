@@ -313,7 +313,7 @@ Instructions:
     client = genai.Client(api_key=api_key)
     try:
         res = client.models.generate_content(
-            model="gemini-3.5-flash-lite",
+            model="gemini-3.8-flash",
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
@@ -479,7 +479,7 @@ Return valid JSON:
 
     try:
         response = client.models.generate_content(
-            model="gemini-3.5-flash-lite",
+            model="gemini-3.8-flash",
             contents=[
                 types.Part.from_bytes(data=audio_bytes, mime_type="audio/wav"),
                 prompt,
